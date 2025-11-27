@@ -1,43 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Tree View با اولویت بالا - جایگزین view پیش‌فرض -->
-    <record id="commission_settlement_tree_invoice" model="ir.ui.view">
-        <field name="name">commission.settlement.tree.invoice</field>
-        <field name="model">commission.settlement</field>
+    <!-- Tree View برای خطوط کمیسیون -->
+    <record id="commission_settlement_line_tree_invoice" model="ir.ui.view">
+        <field name="name">commission.settlement.line.tree.invoice</field>
+        <field name="model">commission.settlement.line</field>
         <field name="priority">1</field>
         <field name="arch" type="xml">
-            <tree string="تسویه‌ها" 
-                  decoration-info="state == 'settled'"
-                  decoration-muted="state == 'cancel'">
-                <field name="name"/>
-                <field name="date_from"/>
-                <field name="date_to"/>
-                <field name="agent_id"/>
+            <tree string="خطوط کمیسیون" editable="bottom">
+                <field name="date_invoice"/>
+                <field name="invoice_line_id"/>
                 <field name="partner_id" optional="show"/>
                 <field name="invoice_id" optional="show"/>
+                <field name="agent_id"/>
+                <field name="settled_amount" 
+                       sum="Total" 
+                       widget="monetary"/>
                 <field name="currency_id" invisible="1"/>
-                <field name="state" 
-                       decoration-success="state == 'settled'"
-                       decoration-info="state == 'invoiced'"
-                       widget="badge"/>
                 <field name="company_id" 
                        groups="base.group_multi_company" 
-                       optional="hide"/>
+                       invisible="1"/>
             </tree>
-        </field>
-    </record>
-
-    <!-- Form View Extension -->
-    <record id="commission_settlement_form_invoice" model="ir.ui.view">
-        <field name="name">commission.settlement.form.invoice</field>
-        <field name="model">commission.settlement</field>
-        <field name="inherit_id" ref="commission.view_settlement_form"/>
-        <field name="arch" type="xml">
-            <xpath expr="//field[@name='agent_id']" position="after">
-                <field name="partner_id" readonly="1"/>
-                <field name="invoice_id" readonly="1"/>
-            </xpath>
         </field>
     </record>
 
