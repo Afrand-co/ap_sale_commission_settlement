@@ -20,7 +20,7 @@ class CommissionSettlementLine(models.Model):
         readonly=True,
     )
 
-    @api.depends('invoice_line_id', 'object_id')
+    @api.depends('invoice_line_id')
     def _compute_invoice_id(self):
         for line in self:
             invoice = False
@@ -34,13 +34,22 @@ class CommissionSettlementLine(models.Model):
             
             if not invoice:
                 try:
-                    # روش 2: از طریق sale order
-                    if line.object_id and line.object_id._name == 'sale.order':
-                        invoices = line.object_id.invoice_ids.filtered(
-                            lambda inv: inv.move_type == 'out_invoice' and inv.state == 'posted'
-                        )
-                        if invoices:
-                            invoice = invoices[0]
+                    # روش 2: از طریق sale order (اگر object_id وجود داشته باشد)
+                    if hasattr(line, 'object_id') and line.object_id:
+                        if line.object_id._name == 'sale.order':
+                            invoices = line.object_id.invoice_ids.filtered(
+                                lambda inv: inv.move_type == 'out_invoice' and inv.state == 'posted'
+                            )
+                            if invoices:
+                                invoice = invoices[0]
+                except:
+                    pass
+            
+            if not invoice:
+                try:
+                    # روش 3: از طریق invoice_id مستقیم در line (اگر وجود داشته باشد)
+                    if hasattr(line, 'invoice_id') and line.invoice_id:
+                        invoice = line.invoice_id
                 except:
                     pass
             
