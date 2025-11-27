@@ -23,7 +23,7 @@
         </field>
     </record>
 
-    <!-- Form View برای خطوط کمیسیون (با priority بالا برای جلوگیری از خطای Studio) -->
+    <!-- Form View برای خطوط کمیسیون (سازگار با XPath Studio) -->
     <record id="commission_settlement_line_form_invoice" model="ir.ui.view">
         <field name="name">commission.settlement.line.form.invoice</field>
         <field name="model">commission.settlement.line</field>
@@ -35,8 +35,6 @@
                         <group>
                             <field name="settlement_id"/>
                             <field name="agent_id"/>
-                        </group>
-                        <group>
                             <field name="partner_id" readonly="1"/>
                             <field name="invoice_id" readonly="1"/>
                         </group>
