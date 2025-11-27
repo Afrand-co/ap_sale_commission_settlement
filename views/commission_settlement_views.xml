@@ -23,5 +23,32 @@
         </field>
     </record>
 
+    <!-- Form View برای خطوط کمیسیون (با priority بالا برای جلوگیری از خطای Studio) -->
+    <record id="commission_settlement_line_form_invoice" model="ir.ui.view">
+        <field name="name">commission.settlement.line.form.invoice</field>
+        <field name="model">commission.settlement.line</field>
+        <field name="priority">1</field>
+        <field name="arch" type="xml">
+            <form string="خط کمیسیون">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="settlement_id"/>
+                            <field name="agent_id"/>
+                        </group>
+                        <group>
+                            <field name="partner_id" readonly="1"/>
+                            <field name="invoice_id" readonly="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="settled_amount" widget="monetary"/>
+                        <field name="currency_id" invisible="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
 </odoo>
 
