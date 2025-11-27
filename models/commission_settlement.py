@@ -18,6 +18,14 @@ class CommissionSettlement(models.Model):
         compute='_compute_invoice_id',
         store=True,
     )
+    
+    partner_id = fields.Many2one(
+        comodel_name='res.partner',
+        string='خریدار',
+        compute='_compute_partner_id',
+        store=True,
+        readonly=True,
+    )
 
     @api.depends('line_ids', 'line_ids.invoice_line_id')
     def _compute_invoice_id(self):
@@ -25,4 +33,9 @@ class CommissionSettlement(models.Model):
             invoices = settlement.line_ids.mapped('invoice_line_id.move_id')
             settlement.invoice_ids = [(6, 0, invoices.ids)]
             settlement.invoice_id = invoices[:1] if invoices else False
+    
+    @api.depends('invoice_id', 'invoice_id.partner_id')
+    def _compute_partner_id(self):
+        for settlement in self:
+            settlement.partner_id = settlement.invoice_id.partner_id if settlement.invoice_id else False
 

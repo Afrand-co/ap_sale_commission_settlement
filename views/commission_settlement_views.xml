@@ -14,6 +14,7 @@
                 <field name="date_from"/>
                 <field name="date_to"/>
                 <field name="agent_id"/>
+                <field name="partner_id" optional="show"/>
                 <field name="invoice_id" optional="show"/>
                 <field name="currency_id" invisible="1"/>
                 <field name="state" 
@@ -34,6 +35,7 @@
         <field name="inherit_id" ref="commission.view_settlement_form"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='agent_id']" position="after">
+                <field name="partner_id" readonly="1"/>
                 <field name="invoice_id" readonly="1"/>
             </xpath>
         </field>
