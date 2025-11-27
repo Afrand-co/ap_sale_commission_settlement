@@ -34,8 +34,10 @@ class CommissionSettlement(models.Model):
             settlement.invoice_ids = [(6, 0, invoices.ids)]
             settlement.invoice_id = invoices[:1] if invoices else False
     
-    @api.depends('invoice_id', 'invoice_id.partner_id')
+    @api.depends('line_ids', 'line_ids.invoice_line_id', 'line_ids.invoice_line_id.move_id', 'line_ids.invoice_line_id.move_id.partner_id')
     def _compute_partner_id(self):
         for settlement in self:
-            settlement.partner_id = settlement.invoice_id.partner_id if settlement.invoice_id else False
+            # Get partner from invoice lines directly
+            partners = settlement.line_ids.mapped('invoice_line_id.move_id.partner_id')
+            settlement.partner_id = partners[:1] if partners else False
 
