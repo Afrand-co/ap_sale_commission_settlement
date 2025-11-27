@@ -6,18 +6,23 @@ class CommissionSettlement(models.Model):
 
     invoice_id = fields.Many2one(
         comodel_name='account.move',
-        string='Related Invoice',
+        string='فاکتور مرتبط',
         compute='_compute_invoice_id',
         store=True,
         readonly=True,
-        help='The invoice related to this commission settlement'
+    )
+    
+    invoice_ids = fields.Many2many(
+        comodel_name='account.move',
+        string='فاکتورهای مرتبط',
+        compute='_compute_invoice_id',
+        store=True,
     )
 
-    @api.depends('line_ids.invoice_line_id')
+    @api.depends('line_ids', 'line_ids.invoice_line_id')
     def _compute_invoice_id(self):
-        """Compute the related invoice from settlement lines"""
         for settlement in self:
-            # Get the first invoice from settlement lines
-            invoice = settlement.line_ids.mapped('invoice_line_id.move_id')[:1]
-            settlement.invoice_id = invoice if invoice else False
+            invoices = settlement.line_ids.mapped('invoice_line_id.move_id')
+            settlement.invoice_ids = [(6, 0, invoices.ids)]
+            settlement.invoice_id = invoices[:1] if invoices else False
 
