@@ -7,19 +7,18 @@
         <field name="model">commission.settlement.line</field>
         <field name="priority">1</field>
         <field name="arch" type="xml">
-            <tree string="خطوط کمیسیون" editable="bottom">
-                <field name="date_invoice"/>
-                <field name="invoice_line_id"/>
+            <tree string="خطوط کمیسیون">
+                <field name="settlement_id"/>
+                <field name="agent_id"/>
                 <field name="partner_id" optional="show"/>
                 <field name="invoice_id" optional="show"/>
-                <field name="agent_id"/>
                 <field name="settled_amount" 
                        sum="Total" 
                        widget="monetary"/>
                 <field name="currency_id" invisible="1"/>
                 <field name="company_id" 
                        groups="base.group_multi_company" 
-                       invisible="1"/>
+                       optional="hide"/>
             </tree>
         </field>
     </record>
