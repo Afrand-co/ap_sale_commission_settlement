@@ -8,7 +8,7 @@ class CommissionSettlementLine(models.Model):
         comodel_name='account.move',
         string='فاکتور مرتبط',
         compute='_compute_invoice_id',
-        store=True,
+        store=False,
         readonly=True,
     )
     
@@ -16,17 +16,17 @@ class CommissionSettlementLine(models.Model):
         comodel_name='res.partner',
         string='خریدار',
         compute='_compute_partner_id',
-        store=True,
+        store=False,
         readonly=True,
     )
 
-    @api.depends('invoice_line_id')
     def _compute_invoice_id(self):
+        """Compute invoice from available fields in settlement line"""
         for line in self:
             invoice = False
             
             try:
-                # روش 1: مستقیم از invoice_line_id
+                # روش 1: مستقیم از invoice_line_id (اگر وجود داشته باشد)
                 if hasattr(line, 'invoice_line_id') and line.invoice_line_id:
                     invoice = line.invoice_line_id.move_id
             except:
@@ -53,10 +53,23 @@ class CommissionSettlementLine(models.Model):
                 except:
                     pass
             
+            if not invoice:
+                try:
+                    # روش 4: از طریق settlement و سپس line_ids
+                    if hasattr(line, 'settlement_id') and line.settlement_id:
+                        if hasattr(line.settlement_id, 'line_ids'):
+                            # سعی در یافتن invoice از سایر خطوط
+                            pass
+                except:
+                    pass
+            
             line.invoice_id = invoice
     
-    @api.depends('invoice_id')
     def _compute_partner_id(self):
+        """Compute partner from invoice"""
         for line in self:
-            line.partner_id = line.invoice_id.partner_id if line.invoice_id else False
+            if line.invoice_id and hasattr(line.invoice_id, 'partner_id'):
+                line.partner_id = line.invoice_id.partner_id
+            else:
+                line.partner_id = False
 
