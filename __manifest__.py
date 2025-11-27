@@ -6,8 +6,8 @@
     'description': """
         Adds related invoice field to commission settlement views
     """,
-    'author': 'Ali Payandeh',
-    'website': 'https://www.afrand.co.ir',
+    'author': 'Your Company',
+    'website': 'https://www.yourcompany.com',
     'license': 'LGPL-3',
     'depends': [
         'commission',
